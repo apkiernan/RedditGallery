@@ -48,6 +48,12 @@ window.onload = function () {
 		e.preventDefault();
 		App.setSubreddit();
 		App.getSubreddit( App.subreddit );
-	})
+	});
+
+	$(window).on( 'scroll', function ( e ) {
+		if ( $(window).scrollTop() == $(document).height() - $(window).height() ) {
+			App.getSubreddit( App.subreddit );
+		};
+	});
 }
 
