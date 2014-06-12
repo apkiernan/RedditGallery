@@ -3,7 +3,7 @@ var App = {
 	subreddit: '',
 
 	//Keep track of page number for subsequent calls
-	counter: 0,
+	counter: '',
 
 
 	setSubreddit: function () {
@@ -13,36 +13,52 @@ var App = {
 
 	},
 
-	getSubreddit: function ( subreddit ) {
+	getSubreddit: function ( subreddit, counter ) {
 
 		$.ajax({
 			
-			url: 'src/getSub.php?subreddit=' + subreddit + '&page=' + App.counter,
+			url: 'src/getSub.php?subreddit=' + subreddit + '&after=' + counter,
 
 			dataType: 'json'
 
 		})
-		.success( function ( response ) { App.loadImages ( response ) } ) 
+		.success( function ( response ) { App.loadGallery ( response ) } ) 
 		.error ( function ( response ) { console.log( 'Something went wrong. The Response was: ' + response ) } );
 	},
 
-	loadImages: function ( response ) {
-		var domain = '//i.imgur.com/';
+	loadGallery: function ( response ) {
+		
+		//Set the counter to listing's 'after' value for subsequent calls
+		App.counter = response.data.after;
 
-		response.data.forEach( function ( obj ) {
-			
-			var img = document.createElement('img');
-			img.setAttribute( 'src', domain + obj.hash + obj.ext )
-			img.classList.add('image');
-			document.querySelector('.gallery').appendChild(img);
+		//Get array of listing JSON Objects
+		var data = response.data.children;
+
+		//Iterate over listing
+		data.forEach( function ( obj ) {
+
+			//Create a link with the thumbnail image inside and add it to the gallery
+			var link = document.createElement( 'a' ),
+				gallery = document.querySelector( '.gallery' ),
+				img = document.createElement( 'img' );
+
+			//Set the link href to fullsize image for lightbox view
+			link.setAttribute( 'href', obj.data.url );
+			gallery.appendChild( link );
+				
+			//Set image to thumbnail	
+			img.setAttribute( 'src', obj.data.thumbnail );
+			img.classList.add( 'image' );
+
+			//Add image to gallery link
+			link.appendChild( img ); 
 		});
-
-		//Increment the Counter to get next page on subsequent calls
-		App.counter++;
+		
 	}
 };
 
-window.onload = function () {
+document.addEventListener( 'DOMContentLoaded', function () {
+
 	var button = document.querySelector('#subreddit-button');
 	button.addEventListener( 'click', function ( e ) {
 		e.preventDefault();
@@ -52,8 +68,8 @@ window.onload = function () {
 
 	$(window).on( 'scroll', function ( e ) {
 		if ( $(window).scrollTop() == $(document).height() - $(window).height() ) {
-			App.getSubreddit( App.subreddit );
+			App.getSubreddit( App.subreddit, App.counter );
 		};
 	});
-}
+});
 
