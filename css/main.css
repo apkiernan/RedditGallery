@@ -62,3 +62,24 @@ button {
 .clearfix {
 	clear: both;
 }
+
+@media screen and (min-width: 320px) {
+	nav {
+		width: 100%;
+		height: 15%;
+	}
+
+	input,
+	button {
+		display: inline;
+	}
+
+	.gallery {
+		width: 100%;
+		float: none;
+	}
+
+	.image {
+		width: 100%;
+	}
+}
