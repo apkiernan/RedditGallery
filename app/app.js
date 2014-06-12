@@ -62,6 +62,11 @@ document.addEventListener( 'DOMContentLoaded', function () {
 	var button = document.querySelector('#subreddit-button');
 	button.addEventListener( 'click', function ( e ) {
 		e.preventDefault();
+
+		//Reset any previous gallery
+		$('.gallery').empty();
+
+		//Set methods for new gallery
 		App.setSubreddit();
 		App.getSubreddit( App.subreddit );
 	});
