@@ -1,3 +1,7 @@
+function foo (data) {
+	App.loadGallery(data);
+}
+
 var App = {
 
 	subreddit: '',
@@ -17,12 +21,11 @@ var App = {
 
 		$.ajax({
 			
-			url: 'src/getSub.php?subreddit=' + subreddit + '&after=' + counter,
+			url: '//reddit.com/r/' + subreddit + '/new.json?jsonp=foo&count=25&after=' + counter,
 
-			dataType: 'json'
+			dataType: 'jsonp'
 
 		})
-		.success( function ( response ) { App.loadGallery ( response ) } ) 
 		.error ( function ( response ) { console.log( 'Something went wrong. The Response was: ' + response ) } );
 	},
 
